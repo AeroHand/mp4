@@ -81,15 +81,59 @@ function bell()
 end	
 
 function qlearn()
-  step(3,2,0,0)
+  x=3
+  y=2
+  t=0
+  for iteration=1,100 do
+    local tempmax={}
+    for k=1,4 do
+      tempmax[k]=q[x][y][k]
+    end
+    local maxval=math.max(unpack(tempmax))
+    local sum=0
+    local dirary={}
+    for k=1,4 do
+    	if q[x][y][k]==maxval then
+    		sum=sum+1
+            dirary[sum]=k
+        end
+    end
+    dir=dirary[math.random(sum)]        
+    step(dir)
+  end  
+
 end
 
-function step(x,y,dir,t)
+function step(dir)
   local tempary={}
+  local fx=x
+  local fy=y
+  if dir==1 then     --up
+    local point=q[x][y-1]
+    fy=y-1
+  end  
+  if dir==2 then     --up
+    local point=q[x][y+1]
+    fy=y+1
+  end  
+  if dir==3 then     --up
+    local point=q[x-1][y]
+    fx=fx-1
+  end  
+  if dir==4 then     --up
+    local point=q[x+1][y]
+    fx=fx+1
+  end  
+  
   for i=1,4 do
-  	temparg[i]=
-
+  	tempary[i]=point[i]
+  end 	
+  local maxOfT = math.max(unpack(tempary))
   q[x][y][dir]=q[x][y][dir]+(60/(59+t))*(a[i][j]+0.99*maxOfT-q[x][y][dir])
+
+  x=fx
+  y=fy
+  t=t+1
 end
 --main	
 f="mp4.1input.txt"
@@ -110,6 +154,20 @@ for i=0,5 do
   local temp = ""
   for j=0,5 do
     temp=temp..policy[i][j].." "
+  end
+  print(temp)
+end
+print()
+for i=0,5 do
+  local temp = ""
+  for j=0,5 do
+  	max=-100
+  	for k=1,4 do
+  		if max<q[i][j][k] then
+  			max=q[i][j][k]
+  	    end
+  	end    		
+    temp=temp..string.format("%.2f",tostring(max)).." "
   end
   print(temp)
 end  
